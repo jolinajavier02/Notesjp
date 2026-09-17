@@ -730,8 +730,8 @@
 
         function getPrimaryRomajiReading(data) {
             const readings = [
-                ...(data.kun_readings || []),
-                ...(data.on_readings || [])
+                ...(data.on_readings || []),
+                ...(data.kun_readings || [])
             ];
             const reading = readings.find(Boolean);
             if (!reading) return '-';
