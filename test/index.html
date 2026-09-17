@@ -3385,15 +3385,28 @@
 
             if (validReadings.length === 0) validReadings.push("?");
 
-            const correctRomaji = validReadings.join(' / ');
+            const correctRomaji = validReadings[0];
             const fullReadings = [...kunRaw, ...onRaw].join(', ');
 
             renderQuestionUI(char, correctRomaji, "Select the correct reading", {
                 type: 'Kanji',
                 meaning: meaning,
                 kana: fullReadings,
-                romaji: correctRomaji
+                romaji: validReadings.join(' / '),
+                acceptedAnswers: validReadings
             });
+        }
+
+        function getAnswerVariants(answer, itemData = null) {
+            const variants = [];
+            if (itemData && Array.isArray(itemData.acceptedAnswers)) variants.push(...itemData.acceptedAnswers);
+            if (typeof answer === 'string') variants.push(...answer.split(/\s*\/\s*/));
+
+            return [...new Set(variants.map(value => value.trim()).filter(Boolean))];
+        }
+
+        function getVisibleAnswer(answer) {
+            return getAnswerVariants(answer)[0] || answer;
         }
 
         function renderQuestionUI(qText, correctAns, context, itemData) {
@@ -3416,7 +3429,9 @@
             revealArea.innerHTML = '';
 
             // Generate Distractors
-            let choices = [correctAns];
+            const correctChoice = getVisibleAnswer(correctAns);
+            const acceptedAnswers = getAnswerVariants(correctAns, itemData);
+            let choices = [correctChoice];
             let pool = [];
 
             // Get pool for distractors
@@ -3445,8 +3460,12 @@
                 pool = [...hiraganaData, ...katakanaData].map(i => i.romaji);
             }
 
-            // Filter out correct answer from pool
-            pool = pool.filter(a => a !== correctAns);
+            // Keep every visible choice to a single answer so the correct one does not stand out.
+            pool = pool.map(getVisibleAnswer);
+            pool = [...new Set(pool.filter(Boolean))];
+
+            // Filter out all accepted variants of the correct answer from pool
+            pool = pool.filter(a => !acceptedAnswers.includes(a) && a !== correctChoice);
             shuffleArray(pool);
 
             // Take 3
@@ -3461,7 +3480,7 @@
                 btn.className = 'choice-btn';
                 btn.textContent = choice;
                 // Pass itemData to checkAnswer
-                btn.onclick = () => checkAnswer(btn, choice, correctAns, itemData);
+                btn.onclick = () => checkAnswer(btn, choice, correctChoice, itemData);
                 grid.appendChild(btn);
             });
         }
