@@ -85,6 +85,15 @@
             line-height: 1;
         }
 
+        .detail-romaji-meaning {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: capitalize;
+            letter-spacing: 0;
+        }
+
         .detail-meaning {
             font-size: 2.5rem;
             font-weight: 800;
@@ -316,6 +325,11 @@
                 font-size: 4rem;
             }
 
+            .detail-romaji-meaning {
+                font-size: 1.2rem;
+                margin: 0;
+            }
+
             .detail-meaning {
                 font-size: 1.5rem;
                 margin: 0;
@@ -375,6 +389,7 @@
 
             <!-- Left: Character -->
             <div class="card-left">
+                <span id="detail-romaji-meaning" class="detail-romaji-meaning">Loading...</span>
                 <span id="detail-char" class="detail-char">?</span>
                 <span id="detail-meaning" class="detail-meaning">Loading...</span>
                 <button class="close-btn" onclick="showGrid()">✕</button>
@@ -681,6 +696,7 @@
 
             // Reset content
             document.getElementById('detail-char').textContent = char;
+            document.getElementById('detail-romaji-meaning').textContent = 'Loading...';
             document.getElementById('detail-meaning').textContent = 'Loading...';
             document.getElementById('detail-onyomi').textContent = '-';
             document.getElementById('detail-kunyomi').textContent = '-';
@@ -707,11 +723,23 @@
                 renderKanjiDetails(data);
             } catch (error) {
                 console.error('Error fetching kanji details:', error);
+                document.getElementById('detail-romaji-meaning').textContent = '-';
                 document.getElementById('detail-meaning').textContent = 'Error loading data';
             }
         }
 
+        function getPrimaryRomajiReading(data) {
+            const readings = [
+                ...(data.kun_readings || []),
+                ...(data.on_readings || [])
+            ];
+            const reading = readings.find(Boolean);
+            if (!reading) return '-';
+            return toRomaji(reading.replace(/[.-]/g, ''));
+        }
+
         function renderKanjiDetails(data) {
+            document.getElementById('detail-romaji-meaning').textContent = getPrimaryRomajiReading(data);
             document.getElementById('detail-meaning').textContent = data.meanings.join(', ');
 
             const onReadings = data.on_readings || [];
@@ -818,6 +846,9 @@
             setTimeout(() => { container.innerHTML = svg; animateStrokes(); }, 10);
         }
     </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="react-app.js"></script>
 </body>
 
 </html>
