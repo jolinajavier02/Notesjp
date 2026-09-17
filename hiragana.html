@@ -144,11 +144,11 @@
     <header class="main-header">
         <div class="container">
             <nav>
-                <a href="home.html" class="logo">Notesjp</a>
+                <a href="/home" class="logo">Notesjp</a>
                 <div class="nav-links">
-                    <a href="home.html" class="nav-link">Dashboard</a>
-                    <a href="katakana.html" class="nav-link">Katakana</a>
-                    <a href="test.html" class="header-btn">Take Test</a>
+                    <a href="/home" class="nav-link">Dashboard</a>
+                    <a href="/katakana" class="nav-link">Katakana</a>
+                    <a href="/test" class="header-btn">Take Test</a>
                 </div>
             </nav>
         </div>
@@ -247,7 +247,7 @@
         function openDetail(char) {
             const item = allData.find(i => i.char === char);
             if (item) {
-                window.location.href = `character-detail.html?char=${encodeURIComponent(char)}&romaji=${encodeURIComponent(item.romaji)}&type=hiragana`;
+                window.location.href = `/character-detail?char=${encodeURIComponent(char)}&romaji=${encodeURIComponent(item.romaji)}&type=hiragana`;
             }
         }
 

@@ -4,83 +4,113 @@
 
     const { createElement: h } = React;
 
-    const pageName = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    const routeNames = new Set([
+        'home',
+        'learn',
+        'hiragana',
+        'katakana',
+        'kanji',
+        'grammar',
+        'particles',
+        'vocabulary',
+        'test',
+        'character-detail'
+    ]);
+
+    function getRouteName() {
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        const lastPart = parts[parts.length - 1] || 'index';
+        const name = lastPart.replace(/\.html$/i, '').toLowerCase();
+        return name === 'index' ? 'index' : name;
+    }
+
+    function cleanCurrentUrl() {
+        const routeName = getRouteName();
+        if (!window.location.pathname.endsWith('.html') || !routeNames.has(routeName)) return;
+
+        const cleanPath = `/${routeName}`;
+        window.history.replaceState(null, '', `${cleanPath}${window.location.search}${window.location.hash}`);
+    }
+
+    cleanCurrentUrl();
+
+    const pageName = getRouteName();
 
     const headerConfigs = {
-        'home.html': {
-            logoHref: 'index.html',
+        home: {
+            logoHref: '/',
             links: [
-                { href: 'index.html', label: 'Home', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/', label: 'Home', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'learn.html': {
-            logoHref: 'home.html',
+        learn: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'hiragana.html': {
-            logoHref: 'home.html',
+        hiragana: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'katakana.html', label: 'Katakana', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/katakana', label: 'Katakana', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'katakana.html': {
-            logoHref: 'home.html',
+        katakana: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'hiragana.html', label: 'Hiragana', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/hiragana', label: 'Hiragana', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'kanji.html': {
-            logoHref: 'home.html',
+        kanji: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'vocabulary.html', label: 'Vocabulary', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/vocabulary', label: 'Vocabulary', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'grammar.html': {
-            logoHref: 'home.html',
+        grammar: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'particles.html', label: 'Particles', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/particles', label: 'Particles', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'particles.html': {
-            logoHref: 'home.html',
+        particles: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'grammar.html', label: 'Grammar', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/grammar', label: 'Grammar', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'vocabulary.html': {
-            logoHref: 'home.html',
+        vocabulary: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'kanji.html', label: 'Kanji', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/kanji', label: 'Kanji', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'test.html': {
-            logoHref: 'home.html',
+        test: {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         },
-        'character-detail.html': {
-            logoHref: 'home.html',
+        'character-detail': {
+            logoHref: '/home',
             links: [
-                { href: 'home.html', label: 'Dashboard', className: 'nav-link' },
-                { href: 'test.html', label: 'Take Test', className: 'header-btn' }
+                { href: '/home', label: 'Dashboard', className: 'nav-link' },
+                { href: '/test', label: 'Take Test', className: 'header-btn' }
             ]
         }
     };
