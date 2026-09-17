@@ -123,12 +123,25 @@ nav {
 }
 
 .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
     font-size: 1.6rem;
     font-weight: 800;
     color: var(--primary-color);
     font-family: var(--font-jp);
     letter-spacing: -0.5px;
     transition: var(--transition);
+}
+
+.logo::before {
+    content: '';
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 50%;
+    background: white url('/favicon.svg') center / cover no-repeat;
+    box-shadow: 0 4px 12px rgba(188, 0, 45, 0.16);
 }
 
 .logo:hover {
